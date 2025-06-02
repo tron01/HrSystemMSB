@@ -19,5 +19,9 @@ public class JobService {
     public List<Job> getAllJobs() {
         return jobRepository.findAll();
     }
+
+    public Job getJobById(String id) {
+        return jobRepository.findById(id).orElse(null);
+    }
 }
 

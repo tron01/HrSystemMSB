@@ -30,4 +30,14 @@ public class JobController {
     public List<Job> getAllJobs() {
         return jobService.getAllJobs();
     }
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<Job> getJobById(@PathVariable String id) {
+        Job job = jobService.getJobById(id);
+        if (job != null) {
+            return ResponseEntity.ok(job);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
