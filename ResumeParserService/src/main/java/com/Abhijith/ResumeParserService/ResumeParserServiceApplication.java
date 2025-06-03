@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages ="com.Abhijith.ResumeParserService.feign")
 public class ResumeParserServiceApplication {
 
 	public static void main(String[] args) {
