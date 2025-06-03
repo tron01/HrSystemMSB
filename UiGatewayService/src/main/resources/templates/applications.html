@@ -10,15 +10,15 @@
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
-                <th>Job ID</th>
+                <th>Index</th>
                 <th>Student Name</th>
                 <th>Email</th>
                 <th>Details</th>
             </tr>
         </thead>
         <tbody>
-            <tr th:each="a : ${applications}">
-                <td th:text="${a.jobId}"></td>
+            <tr th:each="a ,c: ${applications}">
+                <td th:text="${c.count}"></td>
                 <td th:text="${a.studentName}"></td>
                 <td th:text="${a.email}"></td>
                 <td><a th:href="@{'/api/v1/applications/' + ${a.id}}" class="btn btn-info btn-sm">View</a></td>
