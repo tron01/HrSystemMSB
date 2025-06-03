@@ -1,5 +1,6 @@
 package com.Abhijith.UiGatewayService.controller;
 
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.Abhijith.UiGatewayService.feign.ApplicationServiceClient;
 import com.Abhijith.UiGatewayService.dto.ApplicationDto;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
@@ -51,4 +57,27 @@ public class ApplicationController {
         model.addAttribute("resumeUrl", resumeUrl);
         return "application";
     }
+
+    @GetMapping("/view-resume")
+    public ResponseEntity<byte[]> viewResume(@RequestParam String url) {
+        try {
+            URL pdfUrl = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) pdfUrl.openConnection();
+            connection.setRequestMethod("GET");
+            
+            try (InputStream inputStream = connection.getInputStream()) {
+                byte[] pdfBytes = inputStream.readAllBytes();
+                
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_PDF);
+                headers.setContentDisposition(ContentDisposition.inline().filename("resume.pdf").build());
+                
+                return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+            }
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    
+    
 }
