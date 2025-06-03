@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Parsed Resume Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-4">
+    <h2 class="mb-4">Parsed Resume Details</h2>
+    <div class="card mb-3">
+        <div class="card-body">
+            <h4 class="card-title" th:text="${parsedResume.applicantName}"></h4>
+            <h6 class="card-subtitle mb-2 text-muted">Email: <span th:text="${parsedResume.email}"></span></h6>
+            <p><strong>Phone:</strong> <span th:text="${parsedResume.phone}"></span></p>
+            <p><strong>GitHub:</strong> <span th:text="${parsedResume.github}"></span></p>
+            <p><strong>LinkedIn:</strong> <span th:text="${parsedResume.linkedin}"></span></p>
+            <p><strong>Skills:</strong> <span th:text="${parsedResume.skills}"></span></p>
+            <p><strong>Education:</strong> <span th:text="${parsedResume.education}"></span></p>
+            <p><strong>Work Experience:</strong> <span th:text="${parsedResume.workExperience}"></span></p>
+            <p><strong>Projects:</strong> <span th:text="${parsedResume.projects}"></span></p>
+            <p><strong>Certifications:</strong> <span th:text="${parsedResume.certifications}"></span></p>
+            <p><strong>Languages:</strong> <span th:text="${parsedResume.languages}"></span></p>
+            <div th:if="${parsedResume.educationDetails}">
+                <h5>Education Details:</h5>
+                <ul>
+                    <li th:each="edu : ${parsedResume.educationDetails}" th:text="${edu}"></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <a th:href="@{/resume-parser}" class="btn btn-secondary">Back to Parsed Resumes</a>
+</body>
+</html>
+
