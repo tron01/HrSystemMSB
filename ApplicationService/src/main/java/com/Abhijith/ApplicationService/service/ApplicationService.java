@@ -1,10 +1,13 @@
 package com.Abhijith.ApplicationService.service;
 
 import com.Abhijith.ApplicationService.dto.ApplicationDto;
+import com.Abhijith.ApplicationService.dto.ResumeParseRequest;
+import com.Abhijith.ApplicationService.feign.ResumeParserClient;
 import com.Abhijith.ApplicationService.model.Application;
 import com.Abhijith.ApplicationService.repository.ApplicationRepository;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,35 +19,42 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class ApplicationService {
-    
-    @Autowired
-    private ApplicationRepository applicationRepository;
-    
-    @Autowired
-    private Cloudinary cloudinary;
+
+    private final ApplicationRepository applicationRepository;
+    private final Cloudinary cloudinary;
+    private final ResumeParserClient resumeParserClient;
     
     public ApplicationDto createApplication(String jobId, String studentName, String email, MultipartFile resumeFile) throws IOException {
-        // Upload file to Cloudinary
+        // 1. Upload to Cloudinary
         Map uploadResult = cloudinary.uploader().upload(resumeFile.getBytes(),
                 ObjectUtils.asMap("resource_type", "raw"));
-        
         String resumeUrl = uploadResult.get("secure_url").toString();
         
-        // Create and save application
+        // 2. Save application
         Application application = new Application();
         application.setJobId(jobId);
         application.setStudentName(studentName);
         application.setEmail(email);
         application.setResumeUrl(resumeUrl);
         
-        Application savedApplication = applicationRepository.save(application);
+        Application saved = applicationRepository.save(application);
         
-        // Convert to DTO
-        ApplicationDto applicationDto = new ApplicationDto();
-        BeanUtils.copyProperties(savedApplication, applicationDto);
+        // 3. Convert to DTO
+        ApplicationDto dto = new ApplicationDto();
+        BeanUtils.copyProperties(saved, dto);
         
-        return applicationDto;
+        // 4. Send resume to resume-parser-service
+        ResumeParseRequest request = new ResumeParseRequest(studentName, resumeUrl, jobId, email);
+        try {
+            resumeParserClient.sendResumeForParsing(request);
+        } catch (Exception e) {
+            // Optional: log or rethrow
+            e.printStackTrace();
+        }
+        
+        return dto;
     }
     
     public List<ApplicationDto> getAllApplications() {
