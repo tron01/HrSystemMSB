@@ -66,4 +66,11 @@ public class ApplicationService {
                 })
                 .orElse(null);
     }
+    
+    public String getResumeUrlById(String id) {
+        return applicationRepository.findById(id)
+                       .map(Application::getResumeUrl)
+                       .orElse(null);
+    }
+    
 }

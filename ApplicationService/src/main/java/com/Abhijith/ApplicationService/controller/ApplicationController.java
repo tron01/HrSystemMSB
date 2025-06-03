@@ -8,9 +8,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/applications")
@@ -49,4 +50,17 @@ public class ApplicationController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    @GetMapping("/{id}/resume-url")
+    public ResponseEntity<Map<String, String>> getResumeUrl(@PathVariable String id) {
+        String resumeUrl = applicationService.getResumeUrlById(id);
+        if (resumeUrl != null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("resumeUrl", resumeUrl);
+            return ResponseEntity.ok(response);
+        }
+        return ResponseEntity.notFound().build();
+    }
+    
+    
 }
