@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: UiGatewayService  # or application-service / resume-parser-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/ui-gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8080
