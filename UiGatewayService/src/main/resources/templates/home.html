@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="container mt-5">
+    <h1 class="mb-4">Welcome to the UI Gateway Service</h1>
+    <div class="list-group">
+        <a th:href="@{/jobs}" class="list-group-item list-group-item-action">Jobs</a>
+        <a th:href="@{/applications}" class="list-group-item list-group-item-action">Applications</a>
+    </div>
+</body>
+</html>
