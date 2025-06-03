@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-@RequestMapping("/api/v1/applications")
+@RequestMapping("/applications")
 public class ApplicationController {
 
     @Autowired
@@ -52,7 +52,7 @@ public class ApplicationController {
                                     @RequestParam("email") String email,
                                     @RequestParam("resumeFile") MultipartFile resumeFile) {
         applicationServiceClient.createApplication(jobId, studentName, email, resumeFile);
-        return "redirect:/api/v1/applications";
+        return "redirect:/applications";
     }
 
     @GetMapping("/{id}")
