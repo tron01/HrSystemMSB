@@ -15,13 +15,13 @@ import com.Abhijith.UiGatewayService.dto.jobRequest;
 import java.util.List;
 
 @Controller
-@RequestMapping("/api/v1/jobs")
+@RequestMapping("/jobs")
 public class JobController {
 
     @Autowired
     private JobServiceClient jobServiceClient;
 
-    @GetMapping("")
+    @GetMapping
     public String listJobs(Model model) {
         List<Job> jobs = jobServiceClient.getAllJobs();
         model.addAttribute("jobs", jobs);
@@ -34,10 +34,10 @@ public class JobController {
         return "job_form";
     }
 
-    @PostMapping("")
+    @PostMapping
     public String createJob(@ModelAttribute jobRequest jobRequest) {
         jobServiceClient.createJob(jobRequest);
-        return "redirect:/api/v1/jobs";
+        return "redirect:/jobs";
     }
 
     @GetMapping("/{id}")

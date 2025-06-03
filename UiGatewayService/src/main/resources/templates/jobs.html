@@ -6,7 +6,7 @@
 </head>
 <body class="container mt-4">
     <h2 class="mb-4">All Jobs</h2>
-    <a th:href="@{/api/v1/jobs/new}" class="btn btn-primary mb-3">Create New Job</a>
+    <a th:href="@{/jobs/new}" class="btn btn-primary mb-3">Create New Job</a>
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
@@ -23,7 +23,7 @@
                 <td th:text="${job.description}"></td>
                 <td th:text="${job.location}"></td>
                 <td th:text="${job.postedBy}"></td>
-                <td><a th:href="@{'/api/v1/jobs/' + ${job.id}}" class="btn btn-info btn-sm">View</a></td>
+                <td><a th:href="@{'/jobs/' + ${job.id}}" class="btn btn-info btn-sm">View</a></td>
             </tr>
         </tbody>
     </table>

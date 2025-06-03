@@ -6,7 +6,7 @@
 </head>
 <body class="container mt-4">
     <h2 class="mb-4">Create New Application</h2>
-    <form th:action="@{/api/v1/applications}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+    <form th:action="@{/applications}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
         <div class="mb-3">
             <label for="jobId" class="form-label">Job ID:</label>
             <select id="jobId" name="jobId" class="form-select" required>
@@ -31,7 +31,7 @@
             <input type="file" id="resumeFile" name="resumeFile" class="form-control" accept="application/pdf" required>
         </div>
         <button type="submit" class="btn btn-success">Submit Application</button>
-        <a th:href="@{/api/v1/applications}" class="btn btn-secondary ms-2">Back to Applications List</a>
+        <a th:href="@{/applications}" class="btn btn-secondary ms-2">Back to Applications List</a>
     </form>
 </body>
 </html>

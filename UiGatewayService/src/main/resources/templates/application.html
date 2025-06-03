@@ -16,11 +16,11 @@
             <p class="card-text"><strong>Location:</strong> <span th:text="${job.location}"></span></p>
             <p class="card-text"><strong>PostedBy:</strong> <span th:text="${job.postedBy}"></span></p>
 
-            <a th:href="@{/api/v1/applications/view-resume(url=${a.resumeUrl})}" class="btn btn-success m-2" download="resume.pdf">
+            <a th:href="@{/applications/view-resume(url=${a.resumeUrl})}" class="btn btn-success m-2" download="resume.pdf">
                 Download Resume
             </a>
 
-            <a th:href="@{/api/v1/applications/view-resume(url=${a.resumeUrl})}"
+            <a th:href="@{/applications/view-resume(url=${a.resumeUrl})}"
                target="_blank"
                class="btn btn-primary m-2"> View Resume
             </a>
@@ -30,7 +30,7 @@
             </div>
         </div>
     </div>
-    <a th:href="@{/api/v1/applications}" class="btn btn-secondary mt-3">Back to Applications List</a>
+    <a th:href="@{/applications}" class="btn btn-secondary mt-3">Back to Applications List</a>
 </body>
 </html>
 
