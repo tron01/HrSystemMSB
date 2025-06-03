@@ -10,8 +10,11 @@
         <div class="card-body">
             <h5 class="card-title">Student: <span th:text="${a.studentName}"></span></h5>
             <h6 class="card-subtitle mb-2 text-muted">Email: <span th:text="${a.email}"></span></h6>
-            <p class="card-text"><strong>Job ID:</strong> <span th:text="${a.jobId}"></span></p>
-            <p class="card-text"><strong>pdf Link:</strong> <span th:text="${a.resumeUrl}"></span></p>
+            <p class="card-text"><strong>Job ID:</strong> <span th:text="${job.id}"></span></p>
+            <p class="card-text"><strong>Role:</strong> <span th:text="${job.title}"></span></p>
+            <p class="card-text"><strong>Description:</strong> <span th:text="${job.description}"></span></p>
+            <p class="card-text"><strong>Location:</strong> <span th:text="${job.location}"></span></p>
+            <p class="card-text"><strong>PostedBy:</strong> <span th:text="${job.postedBy}"></span></p>
 
             <a th:href="@{/api/v1/applications/view-resume(url=${a.resumeUrl})}" class="btn btn-success m-2" download="resume.pdf">
                 Download Resume

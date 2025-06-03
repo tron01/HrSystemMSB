@@ -1,5 +1,7 @@
 package com.Abhijith.UiGatewayService.controller;
 
+import com.Abhijith.UiGatewayService.feign.JobServiceClient;
+import com.Abhijith.UiGatewayService.model.Job;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import com.Abhijith.UiGatewayService.feign.ApplicationServiceClient;
 import com.Abhijith.UiGatewayService.dto.ApplicationDto;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -23,8 +24,12 @@ import java.util.Map;
 @Controller
 @RequestMapping("/api/v1/applications")
 public class ApplicationController {
+
     @Autowired
     private ApplicationServiceClient applicationServiceClient;
+    @Autowired
+    private JobServiceClient jobServiceClient;
+
 
     @GetMapping
     public String listApplications(Model model) {
@@ -35,6 +40,8 @@ public class ApplicationController {
 
     @GetMapping("/new")
     public String showCreateApplicationForm(Model model) {
+        List<Job> jobs = jobServiceClient.getAllJobs();
+        model.addAttribute("jobs", jobs);
         model.addAttribute("applicationDto", new ApplicationDto());
         return "application_form";
     }
@@ -49,12 +56,13 @@ public class ApplicationController {
     }
 
     @GetMapping("/{id}")
-    public String getApplicationById(@PathVariable("id") String id, Model model) {
+    public String getApplicationDetailsByID(@PathVariable("id") String id, Model model) {
         ApplicationDto application = applicationServiceClient.getApplicationById(id);
         Map<String, String> resumeUrlMap = applicationServiceClient.getResumeUrl(id);
         String resumeUrl = resumeUrlMap != null ? resumeUrlMap.get("url") : null;
         model.addAttribute("a", application);
         model.addAttribute("resumeUrl", resumeUrl);
+        model.addAttribute("job", jobServiceClient.getJobById(application.getJobId()));
         return "application";
     }
 
