@@ -27,4 +27,10 @@ public class ApplicationController {
     public ResponseEntity<Map<String, Object>> getApplicationById(@PathVariable String id) {
         return applicationClient.getApplicationById(id);
     }
+
+    @GetMapping("/applications/{id}/resume-url")
+    public ResponseEntity<Map<String, String>> getResumeUrl(@PathVariable String id) {
+        return applicationClient.getResumeUrl(id);
+    }
+    
 }

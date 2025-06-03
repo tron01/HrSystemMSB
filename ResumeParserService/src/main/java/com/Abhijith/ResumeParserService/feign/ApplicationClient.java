@@ -15,4 +15,7 @@ public interface ApplicationClient {
 	
 	@GetMapping("/applications/{id}")
 	ResponseEntity<Map<String, Object>> getApplicationById(@PathVariable String id);
+
+	@GetMapping("/applications/{id}/resume-url")
+	ResponseEntity<Map<String, String>> getResumeUrl(@PathVariable String id);
 }
