@@ -11,10 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -39,16 +37,7 @@ public class ResumeParserController {
 				PDFTextStripper stripper = new PDFTextStripper();
 				String text = stripper.getText(document);
 				
-				Map<String, Object> extracted = new HashMap<>();
-				
-				extracted.put("fullText", text);
-				extracted.put("name", extractors.extractName(text));
-				extracted.put("email", extractors.extractEmail(text));
-				extracted.put("phone", extractors.extractPhone(text));
-				extracted.put("skills", extractors.extractSkills(text));
-				extracted.put("education", extractors.extractEducation(text));
-				extracted.put("workExperience", extractors.extractWorkExperience(text));
-				
+				Map<String, Object> extracted = extractors.extractAll(text);
 				return ResponseEntity.ok(extracted);
 				
 			} catch (Exception e) {
@@ -64,5 +53,6 @@ public class ResumeParserController {
 	
 	
 	
-
+	
+	
 }
