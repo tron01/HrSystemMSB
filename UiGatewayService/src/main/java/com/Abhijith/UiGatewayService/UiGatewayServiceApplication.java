@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = "com.Abhijith.UiGatewayService.feign")
+@EnableFeignClients(basePackages = "com.Abhijith.UiGatewayService.client")
 public class UiGatewayServiceApplication {
 
 	public static void main(String[] args) {
