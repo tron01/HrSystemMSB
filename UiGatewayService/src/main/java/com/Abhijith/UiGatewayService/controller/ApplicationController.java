@@ -1,6 +1,6 @@
 package com.Abhijith.UiGatewayService.controller;
 
-import com.Abhijith.UiGatewayService.feign.JobServiceClient;
+import com.Abhijith.UiGatewayService.client.JobServiceClient;
 import com.Abhijith.UiGatewayService.model.Job;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
-import com.Abhijith.UiGatewayService.feign.ApplicationServiceClient;
+import com.Abhijith.UiGatewayService.client.ApplicationServiceClient;
 import com.Abhijith.UiGatewayService.dto.ApplicationDto;
 import java.io.IOException;
 import java.io.InputStream;
@@ -87,5 +87,5 @@ public class ApplicationController {
         }
     }
     
-    
+
 }

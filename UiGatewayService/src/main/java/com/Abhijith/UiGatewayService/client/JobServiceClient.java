@@ -1,4 +1,4 @@
-package com.Abhijith.UiGatewayService.feign;
+package com.Abhijith.UiGatewayService.client;
 
 import com.Abhijith.UiGatewayService.dto.jobRequest;
 import com.Abhijith.UiGatewayService.model.Job;

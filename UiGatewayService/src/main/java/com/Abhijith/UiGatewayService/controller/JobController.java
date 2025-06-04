@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-import com.Abhijith.UiGatewayService.feign.JobServiceClient;
+import com.Abhijith.UiGatewayService.client.JobServiceClient;
 import com.Abhijith.UiGatewayService.model.Job;
 import com.Abhijith.UiGatewayService.dto.jobRequest;
 import java.util.List;
