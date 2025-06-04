@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "ApplicationService",fallback = com.Abhijith.UiGatewayService.fallback.ApplicationServiceFallback.class)
+@FeignClient(name = "ApplicationService")
 public interface ApplicationServiceClient {
 
 	@PostMapping(path = "/applications",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
