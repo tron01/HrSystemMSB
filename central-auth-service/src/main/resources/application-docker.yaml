@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: resume-parser-service
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/resume
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}   # Ensures uniqueness
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+server:
+  port: 8084

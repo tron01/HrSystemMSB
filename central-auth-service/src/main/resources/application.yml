@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: central-auth-service
+  profiles:
+    active: dev
+server:
+  port: 8084
