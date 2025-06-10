@@ -6,7 +6,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.servlet.http.Cookie;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,45 +18,66 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class JwtRequestFilter extends OncePerRequestFilter {
-    @Autowired
-    private CustomUserDetailsService userDetailsService;
-    @Autowired
-    private JwtUtil jwtUtil;
 
+    private final CustomUserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
+    
+    public JwtRequestFilter(CustomUserDetailsService userDetailsService, JwtUtil jwtUtil) {
+        this.userDetailsService = userDetailsService;
+        this.jwtUtil = jwtUtil;
+    }
+    
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
             throws ServletException, IOException {
-        String username = null;
-        String jwt = null;
-        // Try to get JWT from HttpOnly cookie first
-        if (request.getCookies() != null) {
-            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
-                if ("jwt".equals(cookie.getName())) {
-                    jwt = cookie.getValue();
-                    break;
+        
+        String jwt = resolveToken(request);        //  Authorization header in one place
+        
+        if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            try {
+                String username = jwtUtil.extractUsername(jwt);   // may throw → handled below
+                if (username != null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    
+                    // Prefer method that checks full UserDetails, if you have it
+                    if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
+                        
+                        UsernamePasswordAuthenticationToken auth =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails, null, userDetails.getAuthorities());
+                        
+                        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        
+                        SecurityContextHolder.getContext().setAuthentication(auth);
+                        
+                        log.debug("JWT authentication succeeded for user {}", username);
+                    } else {
+                        log.warn("JWT validation failed for user {}", username);
+                    }
+                }
+            } catch (Exception ex) {   // ExpiredJwtException, MalformedJwtException, etc.
+                log.warn("JWT processing error: {}", ex.getMessage());
+            }
+        }
+        
+        filterChain.doFilter(request, response);
+}
+
+    /** Extract JWT from HttpOnly cookie first, then “Authorization: Bearer …” header. */
+    private String resolveToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if ("jwt".equals(c.getName()) && c.getValue() != null && !c.getValue().isBlank()) {
+                    return c.getValue();
                 }
             }
         }
-        // Fallback to Authorization header if cookie not present
-        if (jwt == null) {
-            final String authHeader = request.getHeader("Authorization");
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                jwt = authHeader.substring(7);
-            }
-        }
-        if (jwt != null) {
-            username = jwtUtil.extractUsername(jwt);
-        }
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if (jwtUtil.validateToken(jwt, userDetails.getUsername())) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-        }
-        chain.doFilter(request, response);
+        String header = request.getHeader("Authorization");
+        return (header != null && header.startsWith("Bearer ")) ? header.substring(7) : null;
     }
 }

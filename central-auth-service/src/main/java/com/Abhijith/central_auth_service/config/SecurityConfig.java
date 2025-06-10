@@ -1,7 +1,6 @@
 package com.Abhijith.central_auth_service.config;
 
-import com.Abhijith.central_auth_service.util.JwtUtil;
-import com.Abhijith.central_auth_service.service.UserService;
+
 import com.Abhijith.central_auth_service.filter.JwtRequestFilter;
 import com.Abhijith.central_auth_service.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,8 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .requestMatchers("/api/auth/validate").authenticated()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
