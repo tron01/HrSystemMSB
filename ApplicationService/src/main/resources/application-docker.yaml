@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: ApplicationService
+  data:
+    mongodb:
+      uri: mongodb://mongo:27017/pdf
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+server:
+  port: 8082
+
+# Cloudinary configuration
+cloudinary:
+  cloud_name: dutvipg4f
+  api_key: 314876564298642
+  api_secret: KAoHzfGUhCCjjdNKlNlb_cDDWcY

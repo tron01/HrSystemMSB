@@ -1,12 +1,12 @@
 spring:
   application:
-    name: job-posting-service  # or application-service / resume-parser-service
+    name: UiGatewayService
   data:
     mongodb:
-      uri: mongodb://localhost:27017/job
+      uri: mongodb://localhost:27017/ui-gateway
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
 server:
-  port: 8081
+  port: 8080

@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: job-posting-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/job
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+server:
+  port: 8081
+

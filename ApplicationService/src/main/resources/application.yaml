@@ -1,19 +1,7 @@
 spring:
   application:
     name: ApplicationService
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/pdfdb
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+  profiles:
+    active: dev
 server:
-  port: 8082
-
-# Cloudinary configuration
-cloudinary:
-  cloud_name: YOUR_CLOUD_NAME
-  api_key: YOUR_API_KEY
-  api_secret: YOUR_API_SECRET
+  port: 8081
