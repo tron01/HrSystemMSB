@@ -46,7 +46,7 @@ public class ApplicationController {
         return "application_form";
     }
 
-    @PostMapping()
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String createApplication(@RequestParam("jobId") String jobId,
                                     @RequestParam("studentName") String studentName,
                                     @RequestParam("email") String email,

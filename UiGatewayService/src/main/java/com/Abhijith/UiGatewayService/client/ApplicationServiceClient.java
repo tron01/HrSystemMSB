@@ -17,7 +17,7 @@ public interface ApplicationServiceClient {
 			@RequestParam("jobId") String jobId,
 			@RequestParam("studentName") String studentName,
 			@RequestParam("email") String email,
-			@RequestParam("resumeFile") MultipartFile resumeFile);
+			@RequestPart("resumeFile") MultipartFile resumeFile);
 	
 	@GetMapping("/applications")
 	List<ApplicationDto> getAllApplications();
