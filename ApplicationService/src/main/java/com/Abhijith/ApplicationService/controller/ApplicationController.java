@@ -20,7 +20,7 @@ public class ApplicationController {
     @Autowired
     private ApplicationService applicationService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(consumes =  MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApplicationDto> createApplication(
             @RequestParam("jobId") String jobId,
             @RequestParam("studentName") String studentName,
