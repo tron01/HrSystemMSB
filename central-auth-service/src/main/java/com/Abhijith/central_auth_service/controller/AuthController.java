@@ -1,12 +1,12 @@
 package com.Abhijith.central_auth_service.controller;
 
-import com.Abhijith.central_auth_service.Dto.TokenValidationResponse;
 import com.Abhijith.central_auth_service.Dto.UserLoginRequest;
 import com.Abhijith.central_auth_service.model.User;
 import com.Abhijith.central_auth_service.service.UserService;
 import com.Abhijith.central_auth_service.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -22,12 +22,12 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
+@Slf4j
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -70,6 +70,7 @@ public class AuthController {
                                                .path("/")
                                                .maxAge(Duration.ofHours(10))
                                                .build();
+            log.info("User: {} logged in with roles: {}", principal.getUsername(), authentication.getAuthorities());
             
             result.put("message", "Login successful");
             return ResponseEntity.ok()
@@ -84,6 +85,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout() {
         
+        log.info("User {} logged out", SecurityContextHolder.getContext().getAuthentication().getName());
         // Clear security context first
         SecurityContextHolder.clearContext();
         ResponseCookie cleared = ResponseCookie.from("jwt", "")
@@ -93,33 +95,22 @@ public class AuthController {
                                          .path("/")
                                          .maxAge(0)
                                          .build();
-        
         Map<String, String> result = new HashMap<>();
         result.put("message", "Logout successful");
         return ResponseEntity.ok()
                        .header(HttpHeaders.SET_COOKIE, cleared.toString())
                        .body(result);
     }
-
-    @PostMapping("/validate")
-    public ResponseEntity<TokenValidationResponse> validateToken(@RequestHeader("Authorization") String authHeader) {
-        try {
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
-                String username = jwtUtil.extractUsername(token);
-                
-                if (username != null && !jwtUtil.isTokenExpired(token)) {
-                    User user = userService.findByUsername(username)
-                            .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-                            
-                    return ResponseEntity.ok(new TokenValidationResponse(username, user.getRole(), true));
-                }
-            }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new TokenValidationResponse(null, null, false));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new TokenValidationResponse(null, null, false));
-        }
+    @GetMapping("/test")
+    public ResponseEntity<?> test() {
+        // This endpoint is just for testing purposes
+        
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails principal = (UserDetails) authentication.getPrincipal();
+        
+        log.info("User: {} logged in with roles: {}", principal.getUsername(), authentication.getAuthorities());
+        
+        return ResponseEntity.ok().build();
     }
+    
 }

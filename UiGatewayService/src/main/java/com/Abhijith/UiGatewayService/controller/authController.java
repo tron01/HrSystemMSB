@@ -3,14 +3,14 @@ package com.Abhijith.UiGatewayService.controller;
 import com.Abhijith.UiGatewayService.dto.UserloginRequest;
 import com.Abhijith.UiGatewayService.model.UserDto;
 import com.Abhijith.UiGatewayService.service.AuthService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -19,43 +19,33 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class AuthController {
 
 	private final AuthService authService;
-
+	
 	@GetMapping("/login")
 	public String loginPage(Model model) {
 		model.addAttribute("userDto", new UserDto());
 		return "login";
 	}
-
-@PostMapping("/login")
-public String login(@ModelAttribute UserloginRequest userDto,
-                    HttpServletResponse response,
-                    RedirectAttributes redirectAttributes) {
 	
-	ResponseEntity<?> loginResponse = authService.login(userDto);
-	
-	if (loginResponse.getStatusCode().is2xxSuccessful()) {
+	@PostMapping("/login")
+	public String login(@ModelAttribute UserloginRequest userDto,
+	                    HttpServletResponse response,
+	                    RedirectAttributes redirectAttributes) {
 		
-		// ➜ Grab the Set-Cookie header coming from central-auth-service
-		String setCookie = loginResponse.getHeaders()
-				                   .getFirst(HttpHeaders.SET_COOKIE);
+		ResponseEntity<?> loginResponse = authService.login(userDto);
 		
-		if (setCookie != null) {
-			// ➜ Forward it to the real client
-			response.addHeader(HttpHeaders.SET_COOKIE, setCookie);
-		} else {
-			// Fallback: create your own cookie if you prefer
+		if (loginResponse.getStatusCode().is2xxSuccessful()) {
+			String setCookie = loginResponse.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+			if (setCookie != null) {
+				response.addHeader(HttpHeaders.SET_COOKIE, setCookie);
+			}
+			return "redirect:/";
 		}
 		
-		return "redirect:/";
+		redirectAttributes.addFlashAttribute("error", "Invalid username or password");
+		return "redirect:/auth/login";
 	}
 	
-	redirectAttributes.addFlashAttribute("error", "Invalid username or password");
-	return "redirect:/auth/login";
-}
-
-
-
-@GetMapping("/register")
+	@GetMapping("/register")
 	public String registerPage(Model model) {
 		model.addAttribute("userDto", new UserDto());
 		return "register";
@@ -73,19 +63,25 @@ public String login(@ModelAttribute UserloginRequest userDto,
 		redirectAttributes.addFlashAttribute("error", "Registration failed.");
 		return "redirect:/auth/register";
 	}
-
-	@GetMapping("/logout")
-	public String logout(RedirectAttributes redirectAttributes) {
-		ResponseEntity<?> response = authService.logout();
+	
+	@PostMapping("/logout")
+	public String logout(HttpServletResponse response, RedirectAttributes redirectAttributes) {
+		ResponseEntity<?> logoutResponse = authService.logout();
 		
-		if (response.getStatusCode().is2xxSuccessful()) {
+		// Clear JWT cookie in client
+		Cookie cookie = new Cookie("jwt", null);
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
+		cookie.setHttpOnly(true);
+		cookie.setSecure(false);
+		response.addCookie(cookie);
+		
+		if (logoutResponse.getStatusCode().is2xxSuccessful()) {
 			redirectAttributes.addFlashAttribute("message", "You have been logged out.");
 		} else {
-			redirectAttributes.addFlashAttribute("error", "Logout failed. Try again.");
+			redirectAttributes.addFlashAttribute("error", "Logout failed.");
 		}
 		
 		return "redirect:/auth/login";
 	}
-	
-	
 }

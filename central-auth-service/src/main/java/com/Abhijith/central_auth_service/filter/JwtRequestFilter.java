@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Cookie;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,15 +20,12 @@ import java.io.IOException;
 
 @Component
 @Slf4j
+@AllArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private final CustomUserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
     
-    public JwtRequestFilter(CustomUserDetailsService userDetailsService, JwtUtil jwtUtil) {
-        this.userDetailsService = userDetailsService;
-        this.jwtUtil = jwtUtil;
-    }
     
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -53,8 +51,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         
                         SecurityContextHolder.getContext().setAuthentication(auth);
-                        
-                        log.debug("JWT authentication succeeded for user {}", username);
+                        log.info("------------------------------------------------------");
+                        log.info("User authenticated - Username: {}, Role: {}", userDetails.getUsername()
+                                ,userDetails.getAuthorities());
+                        log.info("Request URI: {}", request.getRequestURI());
+                        log.info("-----------------------------------------------------");
                     } else {
                         log.warn("JWT validation failed for user {}", username);
                     }

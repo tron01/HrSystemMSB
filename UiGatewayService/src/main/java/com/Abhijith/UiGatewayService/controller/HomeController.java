@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class HomeController {
 
-    @GetMapping("/")
-    public String home(Authentication authentication) {
+@GetMapping("/")
+public String home(Authentication authentication) {
+    
         if (authentication != null && authentication.isAuthenticated()) {
             if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_HR"))) {
                 return "redirect:/hr/dashboard";
@@ -17,6 +18,6 @@ public class HomeController {
                 return "redirect:/student/dashboard";
             }
         }
-        return "home";
+        return "home"; // Fallback for unauthenticated users
     }
 }

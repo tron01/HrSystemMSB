@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HR Dashboard - HR System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
         body {
             min-height: 100vh;
@@ -100,156 +102,159 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
-    <nav class="sidebar">
-        <div class="sidebar-sticky">
-            <div class="px-3 py-4">
-                <h5 class="text-white">HR Dashboard</h5>
+
+<!-- Sidebar -->
+<nav class="sidebar">
+    <div class="sidebar-sticky">
+        <div class="px-3 py-4">
+            <h5 class="text-white">HR Dashboard</h5>
+        </div>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="/hr/dashboard">
+                    <i class="bi bi-house-door"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-heading">Job Management</li>
+            <li class="nav-item">
+                <a class="nav-link" href="/hr/jobs">
+                    <i class="bi bi-briefcase"></i> Jobs
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/hr/applications">
+                    <i class="bi bi-file-text"></i> Applications
+                </a>
+            </li>
+            <li class="nav-heading">Tools</li>
+            <li class="nav-item">
+                <a class="nav-link" href="/hr/resume-parser">
+                    <i class="bi bi-file-earmark-text"></i> Resume Parser
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/hr/reports">
+                    <i class="bi bi-graph-up"></i> Reports
+                </a>
+            </li>
+            <li class="nav-heading">Account</li>
+            <li class="nav-item">
+                <a class="nav-link" href="/hr/profile">
+                    <i class="bi bi-person"></i> Profile
+                </a>
+            </li>
+            <li class="nav-item">
+                <form th:action="@{/auth/logout}" method="post">
+
+                    <button type="submit" class="nav-link btn btn-link text-start text-white w-100">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="main-content">
+    <!-- Top Navbar -->
+    <nav class="navbar top-navbar navbar-light bg-white mb-4">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">HR Management System</span>
+            <div class="d-flex align-items-center">
+                <span class="me-3">Welcome, <span sec:authentication="name">User</span></span>
             </div>
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a class="nav-link active" href="/hr/dashboard">
-                        <i class="bi bi-house-door"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-heading">Job Management</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/hr/jobs">
-                        <i class="bi bi-briefcase"></i> Jobs
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/hr/applications">
-                        <i class="bi bi-file-text"></i> Applications
-                    </a>
-                </li>
-                <li class="nav-heading">Tools</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/hr/resume-parser">
-                        <i class="bi bi-file-earmark-text"></i> Resume Parser
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/hr/reports">
-                        <i class="bi bi-graph-up"></i> Reports
-                    </a>
-                </li>
-                <li class="nav-heading">Account</li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/hr/profile">
-                        <i class="bi bi-person"></i> Profile
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <form th:action="@{/auth/logout}" method="post">
-                        <button type="submit" class="nav-link border-0 bg-transparent">
-                            <i class="bi bi-box-arrow-right"></i> Logout
-                        </button>
-                    </form>
-                </li>
-            </ul>
         </div>
     </nav>
 
-    <!-- Main Content Area -->
-    <div class="main-content">
-        <!-- Top Navigation -->
-        <nav class="navbar top-navbar navbar-light bg-white mb-4">
-            <div class="container-fluid">
-                <span class="navbar-brand mb-0 h1">HR Management System</span>
-                <div class="d-flex align-items-center">
-                    <span class="me-3">Welcome, <span sec:authentication="name">User</span></span>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Statistics Cards -->
-        <div class="row g-4 mb-4">
-            <div class="col-md-3">
-                <div class="card stat-card bg-primary text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Active Jobs</h5>
-                        <h2 class="card-text">25</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card stat-card bg-success text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">New Applications</h5>
-                        <h2 class="card-text">42</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card stat-card bg-info text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Interviews Scheduled</h5>
-                        <h2 class="card-text">12</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card stat-card bg-warning text-white">
-                    <div class="card-body">
-                        <h5 class="card-title">Pending Reviews</h5>
-                        <h2 class="card-text">18</h2>
-                    </div>
+    <!-- Stat Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card bg-primary text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Active Jobs</h5>
+                    <h2 class="card-text">25</h2>
                 </div>
             </div>
         </div>
-
-        <!-- Recent Activities Section -->
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Recent Activities</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="list-group">
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">New application received</h6>
-                                    <small>3 hours ago</small>
-                                </div>
-                                <p class="mb-1">Application for Senior Java Developer position</p>
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h6 class="mb-1">Interview scheduled</h6>
-                                    <small>5 hours ago</small>
-                                </div>
-                                <p class="mb-1">Technical interview for Full Stack Developer</p>
-                            </a>
-                            <!-- Add more activities as needed -->
-                        </div>
-                    </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-success text-white">
+                <div class="card-body">
+                    <h5 class="card-title">New Applications</h5>
+                    <h2 class="card-text">42</h2>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Quick Actions</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="d-grid gap-2">
-                            <a href="/jobs/post" class="btn btn-primary">
-                                <i class="bi bi-plus-circle"></i> Post New Job
-                            </a>
-                            <a href="/applications/review" class="btn btn-outline-primary">
-                                <i class="bi bi-eye"></i> Review Applications
-                            </a>
-                            <a href="/resume-parser" class="btn btn-outline-primary">
-                                <i class="bi bi-file-text"></i> Parse Resume
-                            </a>
-                        </div>
-                    </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-info text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Interviews Scheduled</h5>
+                    <h2 class="card-text">12</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-warning text-white">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Reviews</h5>
+                    <h2 class="card-text">18</h2>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Activities & Quick Actions -->
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Recent Activities</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">New application received</h6>
+                                <small>3 hours ago</small>
+                            </div>
+                            <p class="mb-1">Application for Senior Java Developer position</p>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">Interview scheduled</h6>
+                                <small>5 hours ago</small>
+                            </div>
+                            <p class="mb-1">Technical interview for Full Stack Developer</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/hr/jobs/post" class="btn btn-primary">
+                            <i class="bi bi-plus-circle"></i> Post New Job
+                        </a>
+                        <a href="/hr/applications/review" class="btn btn-outline-primary">
+                            <i class="bi bi-eye"></i> Review Applications
+                        </a>
+                        <a href="/hr/resume-parser" class="btn btn-outline-primary">
+                            <i class="bi bi-file-text"></i> Parse Resume
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
