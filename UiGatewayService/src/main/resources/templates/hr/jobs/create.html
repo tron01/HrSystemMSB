@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Job - HR Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-hover: #3a56d4;
+            --secondary-color: #3f37c9;
+            --success-color: #4bb543;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --light-bg: #f8f9fa;
+            --card-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #212529;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 2.5rem 0;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .form-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .form-card:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+        }
+
+        .form-card .card-header {
+            background-color: white;
+            border-bottom: 1px solid #f1f1f1;
+            padding: 1.25rem 1.5rem;
+        }
+
+        .form-card .card-title {
+            margin-bottom: 0;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-card .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            border: 1px solid #dee2e6;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+            border-color: var(--primary-color);
+        }
+
+        .form-select {
+            border-radius: 8px;
+            padding: 0.6rem 0.9rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .form-select:focus {
+            box-shadow: 0 0 0 0.2rem rgba(67, 97, 238, 0.25);
+            border-color: var(--primary-color);
+        }
+
+        .form-section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #f1f1f1;
+            color: var(--primary-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        .btn-light {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #6c757d;
+        }
+
+        .btn-light:hover {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            color: #343a40;
+        }
+
+        .required-field::after {
+            content: "*";
+            color: var(--danger-color);
+            margin-left: 4px;
+        }
+
+        .invalid-feedback {
+            display: none;
+            font-size: 0.875rem;
+            color: var(--danger-color);
+        }
+
+        .is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .is-invalid:focus {
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .is-invalid ~ .invalid-feedback {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{hr/common/navbar :: navbar}"></div>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="container">
+            <h1 class="mb-2">Create New Job</h1>
+            <p class="mb-0">Publish a new job opportunity to find the perfect candidate</p>
+        </div>
+    </div>
+
+    <div class="container mb-5">
+        <!-- Alert for errors -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <span th:text="${error}">Error message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+        <div class="card form-card">
+            <div class="card-header">
+                <h4 class="card-title">Job Details</h4>
+            </div>
+            <div class="card-body">
+                <form th:action="@{/hr/jobs}" method="post" th:object="${job}" class="needs-validation" novalidate>
+                    <!-- Basic Information -->
+                    <div class="form-section-title">
+                        <i class="bi bi-info-circle me-2"></i>Basic Information
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <label for="title" class="form-label required-field">Job Title</label>
+                            <input type="text" class="form-control" id="title" th:field="*{title}"
+                                   placeholder="e.g. Senior Java Developer" required>
+                            <div class="invalid-feedback">Please provide a job title.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="companyName" class="form-label required-field">Company Name</label>
+                            <input type="text" class="form-control" id="companyName" th:field="*{companyName}" required>
+                            <div class="invalid-feedback">Please provide a company name.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="location" class="form-label required-field">Location</label>
+                            <input type="text" class="form-control" id="location" th:field="*{location}"
+                                   placeholder="e.g. New York, NY or Remote" required>
+                            <div class="invalid-feedback">Please provide a job location.</div>
+                        </div>
+                    </div>
+
+                    <!-- Job Details -->
+                    <div class="form-section-title">
+                        <i class="bi bi-briefcase me-2"></i>Job Details
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="employmentType" class="form-label required-field">Employment Type</label>
+                            <select class="form-select" id="employmentType" th:field="*{employmentType}" required>
+                                <option value="">Select Employment Type</option>
+                                <option th:each="type : ${employmentTypes}" th:value="${type}" th:text="${type}"></option>
+                            </select>
+                            <div class="invalid-feedback">Please select an employment type.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="jobType" class="form-label">Job Type</label>
+                            <input type="text" class="form-control" id="jobType" th:field="*{jobType}"
+                                   placeholder="e.g. Technical, Management">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="experienceLevel" class="form-label required-field">Experience Level</label>
+                            <select class="form-select" id="experienceLevel" th:field="*{experienceLevel}" required>
+                                <option value="">Select Experience Level</option>
+                                <option th:each="level : ${experienceLevels}" th:value="${level}" th:text="${level}"></option>
+                            </select>
+                            <div class="invalid-feedback">Please select an experience level.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="jobCategory" class="form-label required-field">Job Category</label>
+                            <select class="form-select" id="jobCategory" th:field="*{jobCategory}" required>
+                                <option value="">Select Job Category</option>
+                                <option th:each="category : ${jobCategories}" th:value="${category}" th:text="${category}"></option>
+                            </select>
+                            <div class="invalid-feedback">Please select a job category.</div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="salaryRange" class="form-label">Salary Range</label>
+                            <input type="text" class="form-control" id="salaryRange" th:field="*{salaryRange}"
+                                   placeholder="e.g. $50,000 - $70,000 per year">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="applicationDeadline" class="form-label required-field">Application Deadline</label>
+                            <input type="date" class="form-control" id="applicationDeadline"
+                                   th:field="*{applicationDeadline}" required>
+                            <div class="invalid-feedback">Please provide an application deadline.</div>
+                        </div>
+                    </div>
+
+                    <!-- Description and Skills -->
+                    <div class="form-section-title">
+                        <i class="bi bi-file-text me-2"></i>Description & Skills
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label for="description" class="form-label required-field">Job Description</label>
+                            <textarea class="form-control" id="description" th:field="*{description}"
+                                      rows="6" placeholder="Describe the job responsibilities and requirements..." required></textarea>
+                            <div class="invalid-feedback">Please provide a job description.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="skillsRequired" class="form-label required-field">Required Skills</label>
+                            <input type="text" class="form-control" id="skillsRequired" th:field="*{skillsRequired}"
+                                   placeholder="e.g. Java, Spring Boot, React" required>
+                            <div class="form-text">Enter skills separated by commas</div>
+                            <div class="invalid-feedback">Please provide required skills.</div>
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="/hr/jobs/my-jobs" class="btn btn-light">
+                            <i class="bi bi-x-circle me-2"></i>Cancel
+                        </a>
+                        <div>
+                            <button type="submit" name="saveDraft" value="true" class="btn btn-light me-2">
+                                <i class="bi bi-save me-2"></i>Save as Draft
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send me-2"></i>Publish Job
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        (() => {
+            'use strict';
+
+            // Fetch all forms we want to apply validation to
+            const forms = document.querySelectorAll('.needs-validation');
+
+            // Loop over them and prevent submission
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        })();
+    </script>
+</body>
+</html>

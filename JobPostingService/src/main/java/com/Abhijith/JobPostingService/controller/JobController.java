@@ -1,43 +1,55 @@
 package com.Abhijith.JobPostingService.controller;
 
+import com.Abhijith.JobPostingService.dto.PageableResponse;
 import com.Abhijith.JobPostingService.model.Job;
-import com.Abhijith.JobPostingService.dto.jobRequest;
 import com.Abhijith.JobPostingService.service.JobService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/jobs")
+@RequestMapping("/api/jobs")
+@RequiredArgsConstructor
 public class JobController {
-
-    @Autowired
-    private JobService jobService;
-
-    @PostMapping
-    public ResponseEntity<Job> createJob(@RequestBody jobRequest jobRequest) {
-        Job job = new Job();
-        job.setTitle(jobRequest.getTitle());
-        job.setDescription(jobRequest.getDescription());
-        job.setLocation(jobRequest.getLocation());
-        job.setPostedBy(jobRequest.getPostedBy());
-        return ResponseEntity.ok(jobService.createJob(job));
-    }
+    
+    private final JobService svc;
 
     @GetMapping
-    public List<Job> getAllJobs() {
-        return jobService.getAllJobs();
+    public ResponseEntity<PageableResponse<Job>> getAllJobs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+        Sort.Direction direction = Sort.Direction.fromString(sortDir);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        return ResponseEntity.ok(svc.findAll(pageRequest));
     }
-    
-    @GetMapping("/{id}")
-    public ResponseEntity<Job> getJobById(@PathVariable String id) {
-        Job job = jobService.getJobById(id);
-        if (job != null) {
-            return ResponseEntity.ok(job);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+
+    @GetMapping("/my-jobs")
+    public ResponseEntity<PageableResponse<Job>> getMyJobs(
+            @RequestHeader("X-User-ID") String userId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+        Sort.Direction direction = Sort.Direction.fromString(sortDir);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        return ResponseEntity.ok(svc.findByPostedBy(userId, pageRequest));
     }
+
+    @GetMapping("/my-jobs/status/{status}")
+    public ResponseEntity<PageableResponse<Job>> getMyJobsByStatus(
+            @RequestHeader("X-User-ID") String userId,
+            @PathVariable String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir) {
+        Sort.Direction direction = Sort.Direction.fromString(sortDir);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        return ResponseEntity.ok(svc.findByPostedByAndStatus(userId, status, pageRequest));
+    }
+
 }
