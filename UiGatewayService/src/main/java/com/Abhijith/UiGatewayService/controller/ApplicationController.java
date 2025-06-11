@@ -38,13 +38,6 @@ public class ApplicationController {
         return "applications";
     }
 
-    @GetMapping("/new")
-    public String showCreateApplicationForm(Model model) {
-        List<Job> jobs = jobServiceClient.getAllJobs();
-        model.addAttribute("jobs", jobs);
-        model.addAttribute("applicationDto", new ApplicationDto());
-        return "application_form";
-    }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String createApplication(@RequestParam("jobId") String jobId,
